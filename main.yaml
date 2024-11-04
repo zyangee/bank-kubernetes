@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Read current version
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "Current version is $VERSION"
+          echo "::set-output name=version::$VERSION"
+
+      - name: Increment version
+        id: increment_version
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+
+          if [ "$MINOR" -lt 9 ]; then
+            MINOR=$((MINOR + 1))
+          else
+            MINOR=0
+            MAJOR=$((MAJOR + 1))
+          fi
+
+          NEW_VERSION="$MAJOR.$MINOR"
+          echo "New version is $NEW_VERSION"
+          echo "$NEW_VERSION" > version.txt
+          echo "::set-output name=new_version::$NEW_VERSION"
+
+      - name: Build Docker image
+        run: |
+          NEW_VERSION=${{ steps.increment_version.outputs.new_version }}
+          docker build -t zyange/bank-ver2:$NEW_VERSION .
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: |
+          NEW_VERSION=${{ steps.increment_version.outputs.new_version }}
+          docker tag zyange/bank-ver2:$NEW_VERSION zyange/bank-ver2:latest
+          docker push zyange/bank-ver2:$NEW_VERSION
+          docker push zyange/bank-ver2:latest
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Commit version update
+        run: |
+          git config --local user.email "zyangee2@gmail.com"
+          git config --local user.name "zyangee"
+          git add version.txt
+          git commit -m "Update version to $NEW_VERSION"
+          git push git@github.com:zyangee/bank-kubernetes.git HEAD:main
