@@ -63,10 +63,13 @@ jobs:
       - name: Start SSH agent
         run: eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
 
-      - name: Commit version update
+      - name: Configure Git
         run: |
           git config --local user.email "zyangee2@gmail.com"
           git config --local user.name "zyangee"
+
+      - name: Commit version update
+        run: |
           git add version.txt
           git commit -m "Update version to $NEW_VERSION"
           git push git@github.com:zyangee/bank-kubernetes.git HEAD:main
