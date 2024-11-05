@@ -58,16 +58,16 @@ jobs:
 
       - name: Apply mysql kubernetes resources
         run: |
-          kubectl apply -f ~/yaml/mysql-pv-pvc.yaml
-          kubectl apply -f ~/yaml/mysql-deployment.yaml
-          kubectl apply -f ~/yaml/mysql-svc.yaml
+          kubectl apply -f ./yaml/mysql-pv-pvc.yaml
+          kubectl apply -f ./yaml/mysql-deployment.yaml
+          kubectl apply -f ./yaml/mysql-svc.yaml
 
       - name: Apply login Kubernetes resources
         run: |
-          kubectl apply -f ~/yaml/login-deployment.yaml
-          kubectl apply -f ~/yaml/login-svc.yaml
+          kubectl apply -f ./yaml/login-deployment.yaml
+          kubectl apply -f ./yaml/login-svc.yaml
 
       - name: Apply app Kubernetes resources
         run: |
-          kubectl apply -f ~/yaml/app-deployment.yaml
-          kubectl apply -f ~/yaml/app-svc.yaml
+          kubectl apply -f ./yaml/app-deployment.yaml
+          kubectl apply -f ./yaml/app-svc.yaml
