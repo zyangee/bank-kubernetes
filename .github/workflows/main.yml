@@ -20,9 +20,9 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
-          docker build -t zyange/bank-ver2-login:${{ env.VERSION }} ./login .
-          docker build -t zyange/bank-ver2-account:${{ env.VERSION }} ./account .
-          docker build -t zyange/bank-ver2-loans:${{ env.VERSION }} ./loans .
+          docker build -t zyange/bank-ver2-login:${{ env.VERSION }} ./login/Dockerfile .
+          docker build -t zyange/bank-ver2-account:${{ env.VERSION }} ./account/Dockerfile .
+          docker build -t zyange/bank-ver2-loans:${{ env.VERSION }} ./loans/Dockerfile .
 
       # CD - 도커이미지 푸시
       - name: Login to Docker Hub
