@@ -21,6 +21,7 @@ jobs:
         run: |
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
 
+      # CD - 도커이미지 푸시
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
@@ -29,24 +30,3 @@ jobs:
           docker tag zyange/bank-ver2:${{ env.VERSION }} zyange/bank-ver2:latest
           docker push zyange/bank-ver2:${{ env.VERSION }}
           docker push zyange/bank-ver2:latest
-
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Start SSH agent
-        run: eval $(ssh-agent -s) && ssh-add ~/.ssh/id_ed25519
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "zyangee2@gmail.com"
-          git config --local user.name "zyangee"
-
-      - name: Commit version update
-        run: |
-          git add .
-          git commit -m "Update version to ${{ env.VERSION }}"
-          git push git@github.com:zyangee/bank-kubernetes.git HEAD:main
