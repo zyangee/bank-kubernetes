@@ -20,6 +20,9 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
+          docker build -t zyange/bank-ver2-login:${{ env.VERSION }} ./login
+          docker build -t zyange/bank-ver2-account:${{ env.VERSION }} ./account
+          docker build -t zyange/bank-ver2-loans:${{ env.VERSUIB }} ./loans
 
       # CD - 도커이미지 푸시
       - name: Login to Docker Hub
@@ -28,5 +31,16 @@ jobs:
       - name: Push Docker image
         run: |
           docker tag zyange/bank-ver2:${{ env.VERSION }} zyange/bank-ver2:latest
+          docker tag zyange/bank-ver2-login:${{ env.VERSION }} zyange/bank-ver2-login:latest
+          docker tag zyange/bank-ver2-account:${{ env.VERSION }} zyange/bank-ver2-account:latest
+          docker tag zyange/bank-ver2-loans:${{ env.VERSION }} zyange/bank-ver2-loans:latest
+
           docker push zyange/bank-ver2:${{ env.VERSION }}
+          docker push zyange/bank-ver2-login:${{ env.VERSION }}
+          docker push zyange/bank-ver2-account:${{ env.VERSION }}
+          docker push zyange/bank-ver2-loans:${{ env.VERSION }}
+
           docker push zyange/bank-ver2:latest
+          docker push zyange/bank-ver2-login:latest
+          docker push zyange/bank-ver2-account:latest
+          docker push zyange/bank-ver2-loans:latest
