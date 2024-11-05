@@ -22,7 +22,7 @@ jobs:
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
           docker build -t zyange/bank-ver2-login:${{ env.VERSION }} ./login
           docker build -t zyange/bank-ver2-account:${{ env.VERSION }} ./account
-          docker build -t zyange/bank-ver2-loans:${{ env.VERSUIB }} ./loans
+          docker build -t zyange/bank-ver2-loans:${{ env.VERSION }} ./loans
 
       # CD - 도커이미지 푸시
       - name: Login to Docker Hub
