@@ -48,6 +48,6 @@ jobs:
       - name: Commit version update
         run: |
           echo ${{ env.VERSION }} > version.txt
-          git add version.txt
+          git add .
           git commit -m "Update version to ${{ env.VERSION }}"
           git push git@github.com:zyangee/bank-kubernetes.git HEAD:main
