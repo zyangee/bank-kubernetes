@@ -17,6 +17,15 @@ jobs:
           VERSION=$(cat version.txt)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Create SSH tunnel for Kubernetes API
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no -f -N -L 6443:localhost:6443 ${USER}@${{ secrets.VM_IP }}
+
       - name: Build Docker image
         run: |
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
