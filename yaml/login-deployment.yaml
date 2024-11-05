@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: login
+  template
+    metadata:
+      labels:
+        app: login
+    spec:
+      containers:
+        - name: login
+          image: zyange/bank-ver2-login:${VERSION}
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dbconn-secret
+                  key: DB_SERVER
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dbconn-secret
+                  key: DB_USERNAME
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: dbconn-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: dbconn-secret
+                  key: DB_NAME
+

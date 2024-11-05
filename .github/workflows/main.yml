@@ -44,3 +44,21 @@ jobs:
           docker push zyange/bank-ver2-login:latest
           docker push zyange/bank-ver2-account:latest
           docker push zyange/bank-ver2-loans:latest
+      # Kubernetes 클러스터에 배포
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+      - name: Configure kubectl to use the cluster
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f mysql-pv-pvc.yaml
+          kubectl apply -f mysql-deployment.yaml
+          kubectl apply -f mysql-svc.yaml
+          kubectl apply -f login-deployment.yaml
+          kubectl apply -f login-svc.yaml
+          kubectl apply -f app-deployment.yaml
+          kubectl apply -f app-svc.yaml
