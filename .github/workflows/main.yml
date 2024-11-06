@@ -24,7 +24,7 @@ jobs:
 
       - name: Create SSH tunnel for Kubernetes API
         run: |
-          ssh -i id_ed25519 -o StrictHostKeyChecking=no -f -N -L 6443:192.168.56.100:6443 root@192.168.0.56
+          ssh -i id_ed25519 -o StrictHostKeyChecking=no -f -N -L 6443:192.168.56.100:6443 root@192.168.55.100
 
       - name: Build Docker image
         run: |
