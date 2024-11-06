@@ -56,13 +56,13 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
-      - name: Check Kubernetes cluster connection
-        run: |
-          kubectl cluster-info
-
       - name: Port forward to Kubernetes API
         run: |
           kubectl port-forward --address 0.0.0.0 svc/kubernetes 6443:443 &
+
+      - name: Check Kubernetes cluster connection
+        run: |
+          kubectl cluster-info
 
       - name: Apply mysql kubernetes resources
         run: |
