@@ -17,15 +17,6 @@ jobs:
           VERSION=$(cat version.txt)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_ed25519
-          chmod 600 id_ed25519
-
-      - name: Create SSH tunnel for Kubernetes API
-        run: |
-          ssh -vvv -i id_ed25519 -o StrictHostKeyChecking=no -f -N -L 6443:192.168.56.100:6443 root@192.168.0.56
-
       - name: Build Docker image
         run: |
           docker build -t zyange/bank-ver2:${{ env.VERSION }} .
@@ -68,6 +59,10 @@ jobs:
       - name: Check Kubernetes cluster connection
         run: |
           kubectl cluster-info
+
+      - name: Port forward to Kubernetes API
+        run: |
+          kubectl port-forward --address 0.0.0.0 svc/kubernetes 6443:443 &
 
       - name: Apply mysql kubernetes resources
         run: |
